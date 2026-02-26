@@ -18,32 +18,39 @@
     };
   };
 
-  outputs = { nixpkgs, home-manager, 
-  #nixgl,
-  quickshell, ... }:
-    let
-      home_attrs = rec {
-        username = import ./username.nix;
-        homeDirectory = "/home/${username}";
-        # Do not edit stateVersion value, see https://github.com/nix-community/home-manager/issues/5794
-        stateVersion = "25.05";
-      };
-      system = "x86_64-linux";
-      lib = nixpkgs.lib;
-      pkgs = import nixpkgs {
-        inherit system;
-      };
-    in {
-      homeConfigurations = {
-        illogical_impulse = home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
-          extraSpecialArgs = { inherit home_attrs 
-          #nixgl
-          quickshell; };
-          modules = [ 
-            ./home.nix
-          ];
+  outputs = {
+    nixpkgs,
+    home-manager,
+    #nixgl,
+    quickshell,
+    ...
+  }: let
+    home_attrs = rec {
+      username = import ./username.nix;
+      homeDirectory = "/home/${username}";
+      # Do not edit stateVersion value, see https://github.com/nix-community/home-manager/issues/5794
+      stateVersion = "25.05";
+    };
+    system = "x86_64-linux";
+    lib = nixpkgs.lib;
+    pkgs = import nixpkgs {
+      inherit system;
+    };
+  in {
+    homeConfigurations = {
+      illogical_impulse = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+        extraSpecialArgs = {
+          inherit
+            home_attrs
+            #nixgl
+            quickshell
+            ;
         };
+        modules = [
+          ./home.nix
+        ];
       };
     };
+  };
 }
